@@ -1,0 +1,531 @@
+
+
+//send to fb
+//https://en.cppreference.com/w/cpp/io/basic_ios/eof
+//https://www.geeksforgeeks.org/file-handling-c-classes/
+//https://cplusplus.com/reference/string/string/c_str/
+
+#include<iostream>
+#include<fstream>
+#include<string>
+#include<ctime>
+#include<string.h>
+#include<vector>
+
+class m_data {//2
+      //L110
+
+      public:
+      std::string id;
+      std::string date;
+      
+      std::vector<std::string> add;
+      std::vector<std::string> les;
+      std::vector<std::string> add_comm;
+      std::vector<std::string> les_comm;
+      std::string prev;
+      std::string curr;
+
+};//2
+
+
+/*
+void fdel_all(std::vector<std::string> *in){//2
+
+      in->size();
+}//2
+
+*/
+
+
+void _fflush(char key);
+int ft_days( std::string par); 
+
+//display one dimension of vector
+void fdisp_vec( std::string front, std::vector<std::string> arr){//2
+      //L100
+      int i =0;
+      int n = arr.size();
+
+      std::cout << "\ndisplay vector: "<< front << "\n";
+
+      while(i < n){//10
+
+            std::cout << " i " << i  << ", arr[ ] " << arr[i] << "\n";
+
+            i+=1;
+      }//10
+             
+      
+}//2
+
+//pass vector to vertor string
+void fsingle_multi_array(std::vector<std::string>  *fir_arr, std::vector<std::string> *sec_arr){//2
+      //L90
+      int n = fir_arr->size(), i= 0;
+
+      while(i < n){//10
+
+            sec_arr->push_back( (*fir_arr)[i]);
+            i+=1;
+      }//10
+
+}//2
+
+void fcstr_str(char *in, std::string *out){//2
+      //L30
+
+      //asume out is ""
+      auto i = 0;
+      auto n = strlen(in);
+      
+      while(i < (int) n ){//3
+
+            out->push_back( in[i] );
+            i+=1;
+      }//3
+
+      std::cout << "L35 out " << *out << ", in " << in << "\n";
+      getchar();  
+      
+}//2
+
+//mag salin ng array of string sa isang array of string din (value lang ang isasalin dito)
+void fset_str_arr(std::vector< std::string> *in, std::vector< std::string> *out){//2
+      //L80
+      int n = in->size();
+      auto i = 0;
+      while(i < n){//3
+
+            (*out)[i] = (*in)[i];
+
+            i+=1;
+      }//3
+
+
+
+}//2
+
+
+//kukuha ng isang slot, isasalin ang na sort sa # format
+std::string fset_data(std::string arr, std::vector<std::string> *out){//2
+      //L50
+            
+      auto i = 0, i_i = 0; //i_i initial i
+      auto n = arr.size();
+      
+      std::string s="", fir = "";
+      
+      while ( i < (int) n ){//3
+            
+
+            if(arr[i] == '#'){//4
+
+                  (*out).push_back(s);
+                  if(i_i ==0){//5
+
+                        fir = s;
+                        i_i= 1;
+                  }//5
+
+                  s ="";
+                  i+=1;
+                  
+                  continue;
+            }//4
+            
+            s.push_back(arr[i]);
+            i+=1;
+      }//3
+
+      return fir;
+}//2
+
+//compare ang target data sa bawat slot nang database
+int fget_file( m_data *m_par, std::fstream &file ) {//2
+      //L70
+
+
+      auto i = 0;
+      auto n_i = 8;//database is 3 row per data
+      int n_target = 0;
+      int n_date = 0;
+      int d_count = 0;
+      bool jump = false;
+      bool find = false;
+      bool noseen = false;
+
+      m_data d_data;      
+      m_data d_blank;
+
+      //sub only
+      std::string target;
+
+      target= "1/4/2023";
+
+      n_target = ft_days(target);
+      
+      std::vector< std::string > s_null;
+      
+      std::vector< std::string > s_out;
+      std::vector< std::string > blank;      
+      std::vector< std::string > date;
+      std::string s = "";
+
+      std::cout << "L71_b aa\n";
+
+      while(true){//3
+
+            
+            i=0;
+            while( i < n_i){//4 
+
+                  if( !std::getline( file , s) ) {//5
+                        //didnot see the target
+      
+                        std::cout << "\nL71_c i " <<  i << ", s " << s << "\n";
+
+                        noseen = true;
+                        break;
+                  }//5
+
+                  std::cout << "\nL72 i " <<  i << ", s " << s << "\n";
+
+                  s = fset_data(s, &s_out);
+
+                  fdisp_vec("s_out", s_out);
+                  
+                  std::cout << "\nL72_b i " <<  i << ", s " << s << "\n";
+
+                  if( i == 0){//8
+
+                        d_data.id = s;
+                  }//8                   
+
+                  if( i == 1){//8
+
+                        d_data.date = s; 
+                        n_date = ft_days(d_data.date); 
+                 
+                        if( n_date != n_target){//11
+                                                   
+                              //ones per row data
+                              jump = true;
+
+                        }else {//11.2
+
+                              //may nakita
+                              find = true;
+
+                        }//11.2
+                        
+                  }//8
+
+
+                  if(jump == true){//10
+                        //fail to match then finish the data count by row
+
+                        s_out = blank;
+                        i+=1;
+                        continue;
+                  }//10
+      
+
+                  if( i == 2){//8
+                        //add
+                        //fsingle_multi_array( &s_out, &d_data.add);
+                          
+                        d_data.add =  s_out;                    
+                        fdisp_vec("d_data.add", d_data.add);
+
+                        std::cout << "\nL73 \n" ;
+                        getchar();
+
+                  }//8
+
+                  if( i == 3){//8
+                        //less
+
+                        d_data.les =  s_out;                    
+                        
+
+                  }//8
+
+                  if( i == 4){//8
+
+                        d_data.add_comm =  s_out;  
+                  }//8
+
+
+                  if( i == 5){//8
+
+                        d_data.les_comm =  s_out;  
+                  }//8
+
+                  if( i == 6){//8
+
+                        d_data.prev =  s;  
+                  }//8
+
+                  if( i == 7){//8
+
+                        d_data.curr =  s;  
+                  }//8
+                  
+                  s_out = blank;
+
+                  i+=1;
+
+                 
+            }//4
+            
+            jump = false;
+
+            d_count +=1;
+
+            if(find == true || noseen == true){//7
+                  //exit kasi may nakita na
+
+                  //to display the find row data
+                  if(find == true){//12
+
+                        std::cout << "\nL74 id " << d_data.id << ", d_data.date " << d_data.date <<  ", d_data.prev " << d_data.prev << ", d_data.curr " << d_data.curr <<"\n" ;
+                        fdisp_vec("d_data.add", d_data.add);
+                        fdisp_vec("d_data.add", d_data.les);
+                        fdisp_vec("d_data.add_comm", d_data.add_comm);
+                        fdisp_vec("d_data.les_comm", d_data.les_comm);
+
+
+                  }//12
+
+                  break;
+            }//7
+
+            d_data = d_blank;
+
+      }//3
+      
+
+      return (int) find;
+}//2
+
+//main menu
+void fdate_open(std::vector<m_data> *p_data, std::string str_now){//2
+      //L40
+
+      //get latest date version
+      std::fstream file;
+      std::vector<std::string> add;
+      std::vector<std::string> less;
+
+      m_data data;
+
+      int ret= 0;
+      file.open("wall.txt", std::ios::in);
+    
+      //create input target date it is converted to days
+      ret = fget_file(&data, file);
+
+      std::cout << "\nL41 ret " << ret << "\n";
+
+}//2
+
+void fdate_menu(std::vector<m_data> *p_data ){//2
+      //L20
+
+      time_t now = time(0);
+
+      char *s_now = ctime(&now);
+
+      std::string str_now;
+
+      tm *tm_now = localtime(&now);
+
+      //standby 
+      //fcstr_str(s_now, &str_now );
+      
+      std::string inp = "";
+      while(true){//3
+
+            std::cout << "\n\nb to back\nl lastest date\nr browse date\n";
+            std::cin >> inp;
+            _fflush(' ' );
+
+            if( toupper(inp[0]) == 'B'){//4
+
+                  return;
+            }//4 
+
+            if( toupper(inp[0]) == 'L'){//4
+
+                  str_now = std::to_string( tm_now->tm_mon +1 ) + "/" + std::to_string( tm_now->tm_mday) + "/"+ std::to_string(tm_now->tm_year + 1900); 
+
+                  std::cout << "\n\nLatest: " << s_now  << "\n";
+
+                  std::cout << "\nL22 str_now " << str_now << "\n";                  
+                  
+                  fdate_open(p_data, str_now);
+
+            }//4 
+
+
+            if( toupper(inp[0]) == 'R'){//4
+                  //browse 
+
+                  return;
+            }//4 
+
+
+      }//3
+
+
+}//2
+
+
+void _fflush(char key){//2
+      //L120
+
+      //gamitan ng parameter ' ' space character
+      //pag magsasala ng newline
+      //kada gamit ng cin >> ay gamitan ng _fflush
+
+      //std::cout << "\nL21 key |" << key << "|\n";
+
+      if(key== '\n'){//3
+
+            return;
+      }//3
+
+
+      char c='#';
+
+      //std::cout << "\nL22 c |" << c << "|\n";
+      
+      c = getchar();
+
+      //std::cout << "\nL23 c |" << c << "|\n";
+     
+       while(c != '\n' && c != 0){//3
+
+            //std::cout << "\nL24 c |" << c << "|\n";
+
+            c = getchar();
+      }//3
+
+}//2
+
+//date convert to total days
+int ft_days( std::string par){//2
+      //L140
+
+     
+      std::string s_in="";
+      std::vector<std::string > s_out;
+      std::vector< int > c_month;
+      
+      c_month.push_back(31 );
+      c_month.push_back(28 );
+      c_month.push_back(31 );
+      c_month.push_back(30 );
+      c_month.push_back(31 );
+
+      c_month.push_back(30 );
+      c_month.push_back(31 );
+      c_month.push_back(31 );
+      c_month.push_back(30 );
+      c_month.push_back(31 );
+
+      c_month.push_back(30 );
+      c_month.push_back(31 );
+      
+      size_t n_i = par.size( ), i=0, out_i =0;
+
+      //std::cout << "\nL141 aa n_i " <<  n_i << "\n";
+
+      while( i < n_i){//3
+
+
+            if( par[ i ] == '/'){//4
+
+                  s_out.push_back( s_in ); 
+                  s_in= "";
+                  i+=1;                  
+                  out_i +=1;
+                  continue;
+            }//4
+
+            s_in += par[i];
+            i+=1;
+      }//3
+
+      if( s_in != ""){//10
+
+            s_out.push_back( s_in );
+            out_i +=1;
+            s_in = "";      
+      }//10
+
+      int t_month=0;
+      n_i = atoi( s_out[0].c_str() );
+
+      //std::cout << "\nL143 n_i " <<  n_i << ", out_i " << out_i <<  "\n";
+
+      unsigned int total;
+
+      //counting in month
+      i=0;
+      while( i < n_i ){//5
+
+            t_month += c_month[i];
+            i+=1;
+      }//5
+
+      //std::cout << "\nL144 n_i " <<  n_i << ", t_month " <<  t_month << "\n";
+
+      total = ( atoi( s_out[2].c_str() )  * 365) + t_month + atoi( s_out[1].c_str( ) );
+  
+      return total;
+}//2
+
+int main(){//2
+      //L10
+
+      std::cout << "\n\ntesting:  aa\n";
+            
+      std::vector<m_data> data_1;
+      std::cout << "\n L11 \n";
+      
+      std::string inp= "";  //"10/21/2022"; //738355 days
+       
+      //std::cout << "\nresult " <<  ft_days( inp ) << "\n";
+
+      while(true){//2 
+
+            std::cout << "\n\nq to quit\nd date\n";
+
+            std::cin >> inp;
+            _fflush(' ' );
+
+            //std::cout << "\nL11 inp|" << inp << "| inp[0]|" << inp[0] << "|\n";
+
+            if(toupper( inp[0] )  == 'Q'){//3
+
+                  std::cout << "\n\nleaving the prog...";
+                  break;
+            }//3
+
+
+            if(toupper( inp[0])  == 'D' ){//4
+
+                  fdate_menu(&data_1);
+            }//4
+
+
+
+      }//2
+
+     
+      std::cout << "\n\n";
+      return 0;
+}//2
+
