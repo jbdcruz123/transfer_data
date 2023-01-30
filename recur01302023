@@ -1,0 +1,176 @@
+
+
+
+#del me
+#recursion proc by natural loop 
+
+class m_ite : #2
+
+      val = -1
+      ret = -1
+
+#2
+
+def fdisp():#2
+
+      global m_rec
+
+      n = len( m_rec)
+      i=0
+      while i < n:#3
+
+            n_j = len( m_rec[i])
+            j=0
+            print(f"  [", end="")
+            while j < n_j:#4
+                  
+                  print( f" {i= }, {j= }, {m_rec[i][j].val= } ,{m_rec[i][j].ret= }", end="")                
+
+                  
+                  j+=1
+            #4
+
+            print(f"]  ", end="")
+
+            i+=1;
+      #3
+
+#2
+
+def rec(  par ): #2
+
+      #L20
+      global m_rec
+      global row
+      global i_col
+      
+
+      d_row = 0
+      d_col = 0
+
+      sta = 0     
+  
+ 
+      m_rec.append( [   m_ite  ,  m_ite   ] )
+      
+      i_col.append( 0 ) 
+      
+     
+      m_rec[ row ][ i_col[ row  ] ].val = par
+      
+      print(f"L20 { d_row =}, { d_col= } "  )
+      print(f"  {row=}, {i_col[row]= }\n {m_rec[ row ][ i_col[ row ] ].val=} ")      
+      fdisp()      
+      print(f"{i_col=}\n")
+      
+      input("pause")
+      
+      while True: #3
+                
+            if sta == 0: #4
+            
+                 
+
+                  row +=1
+                  m_rec.append( [  m_ite ,  m_ite   ] )
+                  i_col.append( 0 ) 
+
+                  d_row+=1
+                  
+                  print(f"L22_b {d_row=}, {d_col=}")
+                  print(f"  {row=}, {i_col[row]= }\n {m_rec[ row ][ i_col[ row ] ].val=}")
+                  fdisp()                  
+                  print(f",{i_col=}\n")
+                  input("pause")
+
+                  
+                  if m_rec[ row ][ i_col[ row ] ].val == 3: #5
+                                                             
+                        m_rec.pop( 1)
+                        row-=1
+                        ret = 1
+                        sta = 1
+
+                        d_row -=1
+                        print(f"L22_c {d_row=}, {d_col=}")
+                        print(f"  {row=}, {i_col[row]= }\n {m_rec[ row ][ i_col[ row ] ].val=}")
+                        fdisp()
+                        print(f" ,{i_col=}\n")
+                        input("pause")
+
+                        continue                      
+                                                            
+                  #5
+                  
+                  m_rec[ row ][ i_col[ row ] ].val = m_rec[ row - 1 ][ i_col[ row - 1 ] ].val + 1            
+                                         
+
+
+                 
+
+
+                         
+            else : #4
+            
+                  #back call
+                  
+                  #d_row -=1
+                  print(f"L22_d {d_row=}, {d_col=}\n {row=}, {i_col[row]= }, {ret=}\n {m_rec[ row ][ i_col[ row ] ].val=} \n")
+                  input("pause")
+
+                  if i_col[ row ] ==0 :#7                                  
+                        
+                        print(f"L23_b \n")
+
+                        m_rec[ row ][ i_col[ row ] ].ret = ret
+                        
+                        #geting trady for next col call              
+                        i_col[ row ] +=1
+                        m_rec[ row ][ i_col[ row ] ].val = m_rec[ row ][ i_col[ row ] -1 ].val                 
+                        sta = 0
+                                         
+                  elif i_col[ row ] ==1 :#7 
+                   
+                         print(f"L23_c \n")
+                
+                         m_rec[ row ][ i_col[ row ] ].ret = ret
+                         
+                         t_ret = m_rec[ row ][ i_col[ row ] ].ret + m_rec[ row ][ i_col[ row ] - 1 ].ret                     
+                         
+                         m_rec.pop( 1 )
+                         
+                         #get total give 1 prev                     
+                         row -=1
+                         
+                         #total ang tail 0 or 1 col call
+                         if  i_col[ row ]  == 0: #10
+                         
+                               ret = t_ret
+                               
+                         elif i_col[ row ] ==1: #10
+                         
+                               ret = t_net
+                         #10
+                         
+                  #7
+                  
+                  print(f"L22_e {d_row=}, {d_col=}\n {row=}, {i_col[row]= }, {ret=}\n {m_rec[ row ][ i_col[ row ] ].val=} \n")
+                  input("pause") 
+            #4
+            
+            if row == 0:# 11
+                  #assig the last retrun val
+                  m_rec[ row ][ i_col[ row  ]  ].ret =  t_ret
+                  return t_ret
+            #11
+            
+      #3
+
+#2
+
+m_rec = [  ]
+i_col = [  ]
+
+row = 0
+
+rec(  0)
